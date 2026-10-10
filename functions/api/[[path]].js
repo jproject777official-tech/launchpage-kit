@@ -40,7 +40,7 @@ function getCookie(request, name) {
 }
 function safeOrigin(request) {
   const origin = request.headers.get("Origin");
-  if (!origin) return true;
+  if (!origin) return false;
   try { return new URL(origin).origin === new URL(request.url).origin; } catch { return false; }
 }
 async function body(request) {
@@ -212,6 +212,7 @@ async function api(request, env) {
 
   if (method === "GET" && route === "sites") {
     const result = await requireUser(request,env); if (result.response) return result.response;
+    if (result.user.must_change_password) return fail("Ganti kata sandi sebelum melanjutkan.",403);
     if (result.user.role==="admin") {
       const rows=await env.DB.prepare("SELECT s.id,s.name,s.slug,s.status,s.plan_name,s.template_key,s.updated_at,c.business_name,c.id AS client_id FROM sites s JOIN clients c ON c.id=s.client_id ORDER BY s.created_at DESC LIMIT 300").all();
       return json({sites:rows.results});
@@ -237,6 +238,7 @@ async function api(request, env) {
 
   if (parts[0] === "sites" && parts[1] && parts.length===2 && method==="GET") {
     const result=await requireUser(request,env); if(result.response) return result.response;
+    if(result.user.must_change_password) return fail("Ganti kata sandi sebelum melanjutkan.",403);
     const site=await ownedSite(env.DB,result.user,parts[1]); if(!site) return fail("Website tidak ditemukan atau akses ditolak.",404);
     return json({site:{id:site.id,clientId:site.client_id,name:site.name,slug:site.slug,templateKey:site.template_key,status:site.status,planName:site.plan_name,content:parseJson(site.content_json),updatedAt:site.updated_at}});
   }
@@ -266,6 +268,7 @@ async function api(request, env) {
 
   if (method==="GET" && route==="domains") {
     const result=await requireUser(request,env); if(result.response) return result.response;
+    if(result.user.must_change_password) return fail("Ganti kata sandi sebelum melanjutkan.",403);
     if(result.user.role==="admin") {
       const rows=await env.DB.prepare("SELECT d.*,s.name AS site_name,s.slug,c.business_name FROM domains d JOIN sites s ON s.id=d.site_id JOIN clients c ON c.id=s.client_id ORDER BY d.created_at DESC LIMIT 300").all();
       return json({domains:rows.results});
@@ -275,6 +278,7 @@ async function api(request, env) {
   }
   if (method==="POST" && route==="domains") {
     const result=await requireUser(request,env); if(result.response) return result.response;
+    if(result.user.must_change_password) return fail("Ganti kata sandi sebelum melanjutkan.",403);
     const data=await body(request);
     const siteId=cleanText(data?.siteId,100), hostname=cleanText(data?.hostname,253).toLowerCase().replace(/\.$/,"");
     if(!validHostname(hostname)) return fail("Nama domain tidak valid. Masukkan domain saja, tanpa https:// atau path.");

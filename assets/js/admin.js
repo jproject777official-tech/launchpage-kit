@@ -1,0 +1,31 @@
+(() => {
+  const $=s=>document.querySelector(s), notice=$("#notice");
+  let clients=[],sites=[],domains=[];
+  function show(message,error=false){notice.textContent=message;notice.hidden=false;notice.classList.toggle("error",error)}
+  async function api(path,options={}){const response=await fetch("/api/"+path,{credentials:"same-origin",...options,headers:{"Content-Type":"application/json",...(options.headers||{})}});const data=await response.json().catch(()=>({}));if(response.status===401){location.href="/login/";throw new Error("Silakan login kembali.");}if(!response.ok)throw new Error(data.error||"Permintaan gagal.");return data;}
+  function node(tag,text,cls){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el}
+  function cell(row,text){row.append(node("td",text))}
+  function table(headers,rows){const wrap=node("div");if(!rows.length){wrap.append(node("div","Belum ada data.","console-empty"));return wrap;}const t=node("table",undefined,"console-table"),thead=node("thead"),tr=node("tr");headers.forEach(h=>tr.append(node("th",h)));thead.append(tr);t.append(thead);const tb=node("tbody");rows.forEach(r=>tb.append(r));t.append(tb);wrap.append(t);return wrap}
+  function status(text){return node("span",text,"status "+String(text||"").toLowerCase().replace(/[^a-z_]/g,""))}
+  async function load(){
+    try{
+      const session=await api("session");if(!session.user){location.href="/login/";return;}if(session.user.role!=="admin"){location.href="/client/";return;}
+      $("#whoami").textContent=session.user.fullName+" · Admin";
+      const dash=await api("dashboard");
+      if(dash.mustChangePassword){$("#password-panel").hidden=false;$("#admin-content").hidden=true;return;}
+      $("#password-panel").hidden=true;$("#admin-content").hidden=false;
+      $("#stat-clients").textContent=dash.stats.clients;$("#stat-sites").textContent=dash.stats.sites;$("#stat-published").textContent=dash.stats.published;$("#stat-domains").textContent=dash.stats.domain_attention;
+      sites=dash.sites||[];domains=dash.domains||[];
+      const clientsData=await api("clients");clients=clientsData.clients||[];
+      const select=$("#site-client");select.replaceChildren(new Option("Pilih pelanggan",""));clients.forEach(c=>select.add(new Option(c.business_name+" · "+c.email,c.id)));
+      $("#sites-table").replaceChildren(table(["Website","Pelanggan","Slug","Paket","Status","Aksi"],sites.map(s=>{const tr=node("tr");cell(tr,s.name);cell(tr,s.business_name);cell(tr,s.slug);cell(tr,s.plan_name);const td=node("td");td.append(status(s.status));tr.append(td);const action=node("td");const link=node("a","Pratinjau ↗");link.href="/p/"+encodeURIComponent(s.slug);link.target="_blank";link.rel="noopener";action.append(link);const toggle=node("button",s.status==="published"?"Jadikan draft":"Terbitkan","console-button secondary");toggle.style.marginLeft="7px";toggle.addEventListener("click",async()=>{try{await api("sites/"+s.id+"/publish",{method:"POST",body:JSON.stringify({status:s.status==="published"?"draft":"published"})});show("Status website diperbarui.");await load();}catch(e){show(e.message,true);}});action.append(toggle);tr.append(action);return tr;})));
+      $("#domains-table").replaceChildren(table(["Domain","Website","Pelanggan","Status","Tanggal berakhir","Ubah status"],domains.map(d=>{const tr=node("tr");cell(tr,d.hostname);cell(tr,d.site_name);cell(tr,d.business_name);const st=node("td");st.append(status(d.status));tr.append(st);cell(tr,d.expires_on||"Belum dicatat");const td=node("td"),select=node("select");["pending","verification_needed","dns_pending","ssl_pending","active","expired","suspended","removed"].forEach(v=>select.add(new Option(v,v)));select.value=d.status;td.append(select);const btn=node("button","Simpan","console-button secondary");btn.style.marginLeft="6px";btn.addEventListener("click",async()=>{try{await api("domains/"+d.id,{method:"PATCH",body:JSON.stringify({status:select.value})});show("Status domain diperbarui. Pastikan status active hanya dipilih setelah verifikasi nyata.");await load();}catch(e){show(e.message,true);}});td.append(btn);tr.append(td);return tr;})));
+      $("#clients-table").replaceChildren(table(["Usaha/sekolah","Nama admin","Email","Kategori","Website","Status"],clients.map(c=>{const tr=node("tr");cell(tr,c.business_name);cell(tr,c.full_name);cell(tr,c.email);cell(tr,c.client_type);cell(tr,String(c.site_count));const td=node("td");td.append(status(c.user_status));tr.append(td);return tr;})));
+    }catch(e){show(e.message||"Gagal memuat dashboard.",true);}
+  }
+  $("#client-form").addEventListener("submit",async e=>{e.preventDefault();const f=e.currentTarget,b=f.querySelector("button");b.disabled=true;try{const data=Object.fromEntries(new FormData(f));const result=await api("clients",{method:"POST",body:JSON.stringify(data)});const credential=$("#created-credential");credential.replaceChildren(node("strong","Akun pelanggan berhasil dibuat. Simpan kata sandi sementara sekarang."),node("p","Email: "+result.client.email),node("p","Nama pelanggan: "+result.client.businessName),node("p","Kata sandi sementara:"),node("div",result.temporaryPassword,"password-once"),node("p",result.notice));credential.hidden=false;show("Pelanggan berhasil dibuat. Kirim kredensial melalui saluran aman.");f.reset();await load();}catch(err){show(err.message,true);}finally{b.disabled=false;}});
+  $("#site-form").addEventListener("submit",async e=>{e.preventDefault();const f=e.currentTarget,b=f.querySelector("button");b.disabled=true;try{const data=Object.fromEntries(new FormData(f));const result=await api("sites",{method:"POST",body:JSON.stringify(data)});show("Website draft dibuat. URL pratinjau: "+location.origin+"/p/"+result.site.slug);f.reset();await load();}catch(err){show(err.message,true);}finally{b.disabled=false;}});
+  $("#password-form").addEventListener("submit",async e=>{e.preventDefault();try{await api("change-password",{method:"POST",body:JSON.stringify({password:e.currentTarget.password.value})});show("Kata sandi berhasil diganti.");await load();}catch(err){show(err.message,true);}});
+  $("#logout").addEventListener("click",async()=>{try{await api("logout",{method:"POST",body:"{}"});}finally{location.href="/login/";}});
+  $("#refresh").addEventListener("click",load);load();
+})();

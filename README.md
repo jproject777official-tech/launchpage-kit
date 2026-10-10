@@ -95,3 +95,18 @@ Panduan resmi: https://developers.cloudflare.com/pages/get-started/git-integrati
 ## Lisensi
 
 MIT. Lihat `LICENSE`.
+
+
+## Panel pengelolaan (MVP scaffold)
+
+RuangWeb now also includes a starter multi-tenant platform:
+- `/setup/` — one-time creation of the first admin using a Cloudflare secret.
+- `/login/` — sign in.
+- `/admin/` — admin overview, customer accounts, draft websites, publish status, and domain status.
+- `/client/` — client content editor and domain request form.
+- `/p/<slug>` — public page for a published website.
+- `functions/` — Pages Functions API and custom-domain routing middleware.
+- `migrations/0001_init.sql` — D1 schema.
+- `docs/PLATFORM_SETUP.md` — deployment, bootstrap, security, and domain setup instructions.
+
+**Important:** this is an initial implementation scaffold, not yet deployed or security-tested. It requires a real D1 database ID and `BOOTSTRAP_SECRET` configured in Cloudflare. Do not onboard real customers until staging tests, tenant-isolation tests, login rate limiting, password recovery, and security review are completed.

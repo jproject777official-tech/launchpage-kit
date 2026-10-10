@@ -1,82 +1,97 @@
-# LaunchPage Kit
+# RuangWeb — Katalog Jasa Website
 
-A lightweight starter kit for a small digital business: responsive landing-page examples and free browser-based text tools. Built with plain HTML, CSS, and JavaScript so beginners can customize it without a build step.
+RuangWeb adalah konsep studio jasa pembuatan website berharga terjangkau untuk UMKM dan sekolah. Pelanggan memilih demo, memilih paket, lalu meminta penyesuaian berdasarkan kebutuhan. Nama RuangWeb adalah nama kerja; cek ketersediaan merek dan domain sebelum peluncuran publik.
 
-**Live-ready static site · No framework · No database · No paid runtime dependencies**
+**Static-first · HTML/CSS/JavaScript · Tanpa backend · Tanpa database · Tanpa proses build**
 
-## Included
+## Produk awal
 
-- Responsive homepage introducing the kit
-- Three landing-page demos: creator, freelancer, and SaaS
-- Three free browser tools: word counter, text case converter, and URL slug generator
-- Shared CSS design system and mobile navigation script
-- Basic SEO metadata and a Cloudflare Pages headers file
+### Demo UMKM
+- `demos/umkm-kuliner.html` — kuliner, kafe, restoran, katering
+- `demos/umkm-jasa.html` — laundry, bengkel, salon, jasa lokal
+- `demos/umkm-profil.html` — profil bisnis dan layanan profesional
 
-## Project structure
+### Demo sekolah
+- `demos/sekolah-paud.html` — TK dan PAUD
+- `demos/sekolah-profile.html` — profil sekolah dan informasi PPDB
 
-~~~text
+### Harga uji awal
+- UMKM Starter: mulai Rp499.000
+- UMKM Business: mulai Rp899.000
+- School Profile: mulai Rp1.499.000
+- Kebutuhan khusus, formulir PPDB, halaman tambahan, domain, email bisnis, konten, dan pemeliharaan dibahas terpisah.
+
+Harga adalah titik awal pengujian, bukan jaminan harga pasar. Sebelum menerima proyek, jelaskan jumlah halaman, konten yang harus disediakan pelanggan, jumlah revisi, waktu pengerjaan, pembayaran, domain, dan biaya tambahan secara tertulis.
+
+## Struktur proyek
+
+```text
 launchpage-kit/
 ├── index.html
 ├── assets/
 │   ├── css/style.css
 │   └── js/
 │       ├── main.js
+│       ├── site-config.js
+│       ├── order.js
 │       ├── word-counter.js
 │       ├── text-case.js
 │       └── slug-generator.js
 ├── demos/
-│   ├── creator.html
-│   ├── freelancer.html
-│   └── saas.html
+│   ├── umkm-kuliner.html
+│   ├── umkm-jasa.html
+│   ├── umkm-profil.html
+│   ├── sekolah-paud.html
+│   ├── sekolah-profile.html
+│   └── (demo awal lain tetap tersimpan sebagai arsip)
 ├── tools/
-│   ├── word-counter.html
-│   ├── text-case.html
-│   └── slug-generator.html
 ├── _headers
-├── .gitignore
 └── LICENSE
-~~~
+```
 
-## Preview locally
+## Konfigurasi WhatsApp sebelum peluncuran
 
-No install or build command is needed. Open index.html in a browser, or use any simple static file server. Serving the repository root gives the most accurate preview of relative links.
+1. Buka `assets/js/site-config.js`.
+2. Isi `whatsappNumber` dengan nomor bisnis dalam format internasional tanpa tanda plus atau karakter lain. Contoh format Indonesia: `62812xxxxxxx` (ganti dengan nomor bisnis yang benar).
+3. Simpan perubahan dan uji tombol “Pilih desain” dari homepage dan setiap demo.
+4. Pastikan pesan yang terbuka berisi kode produk dan paket yang benar.
 
-## Deploy to Cloudflare Pages
+Nomor WhatsApp belum diisi pada versi repository ini. Tombol pemesanan akan membawa pengunjung ke bagian kontak sampai nomor resmi dikonfigurasi. Jangan menaruh nomor pribadi atau nomor contoh pada website publik.
 
-1. Sign in to Cloudflare and open Workers & Pages.
-2. Choose Create application, then Pages, then Connect to Git (labels may vary).
-3. Select the repository jproject777official-tech/launchpage-kit.
-4. Set the production branch to main.
-5. Choose None for the framework preset.
-6. Leave the build command empty. Set the build output directory to the repository root (often entered as / if accepted by the UI).
-7. Save and deploy. This static site needs no build step or server-side function.
-8. After the first deployment, open the Pages project's Custom domains area and follow the DNS instructions to connect your domain.
+## Pratinjau lokal
 
-Cloudflare's Free plan limits and dashboard labels can change, so follow the current dashboard if a field differs.
+Buka `index.html` di browser atau jalankan server statis sederhana dari folder root. Penggunaan server lokal biasanya memberi hasil paling akurat untuk tautan relatif.
 
-## Customize before publishing
+## Deploy ke Cloudflare Pages
 
-- Replace sample copy, brand names, colors, email addresses, and links.
-- Update page titles and descriptions for the actual audience and offer.
-- Connect calls to action to your real contact form, booking page, checkout, or signup.
-- Add real project screenshots and only use images you have permission to publish.
-- Test every page on mobile and desktop.
-- Keep testimonials, metrics, and customer logos truthful. Demo copy is placeholder content, not a real customer claim.
+1. Masuk ke Cloudflare dan buka **Workers & Pages**.
+2. Pilih membuat aplikasi Pages dan hubungkan repository Git.
+3. Pilih `jproject777official-tech/launchpage-kit`.
+4. Branch produksi: `main`.
+5. Framework preset: **None**.
+6. Build command: kosongkan.
+7. Build output directory: root repository (sesuai petunjuk dashboard Cloudflare yang berlaku).
+8. Deploy, lalu uji URL `pages.dev` sebelum menghubungkan domain khusus.
 
-The homepage currently uses hello@example.com as a placeholder contact. Replace it before using the site for business.
+Panduan resmi: https://developers.cloudflare.com/pages/get-started/git-integration/
 
-## Business use ideas
+## Checklist sebelum menerima pesanan
 
-1. Offer customized landing pages using the demos as starting points.
-2. Package polished variants as downloadable templates.
-3. Use the free browser tools to attract relevant visitors and introduce your paid service or templates.
+- Ganti nama demo, teks, foto, dan informasi contoh dengan materi pelanggan yang sah.
+- Periksa tampilan desktop dan ponsel, tautan, tombol, dan aksesibilitas dasar.
+- Pastikan nomor WhatsApp bisnis benar.
+- Tulis ruang lingkup, harga akhir, uang muka, tenggat, revisi, dan biaya tambahan.
+- Jangan menampilkan testimoni, statistik, atau logo pelanggan yang tidak nyata.
+- Untuk foto/data anak atau siswa, dapatkan izin yang sesuai sebelum publikasi.
+- Formulir PPDB dengan penyimpanan data, akun, atau dashboard tidak termasuk dalam paket profil statis secara otomatis. Tinjau privasi dan keamanan sebelum membuat fitur yang memproses data pribadi.
 
-Possible initial pricing experiments from the planning stage: US$49 for a customized one-page site, US$99 for an expanded page, and US$9 for a template. These are test prices, not guaranteed market rates. Validate demand by talking to potential buyers.
+## Catatan teknis
 
-## Privacy and dependencies
+- Website utama dan demo katalog merupakan halaman statis. Tidak ada backend atau database.
+- Tombol pemesanan memakai tautan WhatsApp dengan pesan awal yang sudah diisi, setelah nomor bisnis dikonfigurasi.
+- Tools teks yang lama tetap tersimpan, tetapi bukan fokus utama katalog jasa.
+- CSS menggunakan Google Fonts. Untuk menghilangkan permintaan pihak ketiga, hapus baris `@import` paling atas di `assets/css/style.css`; font fallback tetap tersedia.
 
-The text tools process input locally in the browser and do not upload it. The stylesheet imports Google Fonts for visual polish; to avoid that third-party request, remove the @import line in assets/css/style.css. The site will use fallback sans-serif fonts.
+## Lisensi
 
-## License
-
-Released under the MIT License. See LICENSE.
+MIT. Lihat `LICENSE`.

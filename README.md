@@ -90,7 +90,7 @@ Panduan resmi: https://developers.cloudflare.com/pages/get-started/git-integrati
 - Website utama dan demo katalog merupakan halaman statis. Tidak ada backend atau database.
 - Tombol pemesanan memakai tautan WhatsApp dengan pesan awal yang sudah diisi, setelah nomor bisnis dikonfigurasi.
 - Tools teks yang lama tetap tersimpan, tetapi bukan fokus utama katalog jasa.
-- CSS menggunakan Google Fonts. Untuk menghilangkan permintaan pihak ketiga, hapus baris `@import` paling atas di `assets/css/style.css`; font fallback tetap tersedia.
+- CSS menggunakan font sistem dan tidak mengimpor Google Fonts.
 
 ## Lisensi
 

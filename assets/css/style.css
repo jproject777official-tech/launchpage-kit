@@ -42,3 +42,5 @@
 .demo-page .demo-hero .decor-school{background:#9ed7b3;right:3%;top:55px}
 .demo-page .demo-hero .decor-blue{background:#a7c5f6;right:3%;top:55px}
 @media(max-width:760px){.pricing-grid,.faq-grid{grid-template-columns:1fr}.pricing-card ul{min-height:0}.card-actions .button{flex:1}.catalog-filters{margin-top:0}.pricing-card{padding:21px}}
+
+button.button{border:0;cursor:pointer}

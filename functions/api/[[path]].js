@@ -170,7 +170,7 @@ async function api(request, env) {
   if (method === "GET" && route === "dashboard") {
     const result = await requireUser(request,env);
     if (result.response) return result.response;
-    if (result.user.must_change_password) return fail("Ganti kata sandi sebelum melanjutkan.",403);
+    if (result.user.must_change_password) return json({user:publicUser(result.user),mustChangePassword:true,sites:[],domains:[]});
     if (result.user.role === "admin") {
       const stats = await env.DB.prepare("SELECT (SELECT COUNT(*) FROM clients) AS clients,(SELECT COUNT(*) FROM sites) AS sites,(SELECT COUNT(*) FROM sites WHERE status='published') AS published,(SELECT COUNT(*) FROM domains WHERE status!='removed') AS domains,(SELECT COUNT(*) FROM domains WHERE status IN ('pending','verification_needed','dns_pending','ssl_pending')) AS domain_attention").first();
       const sites = await env.DB.prepare("SELECT s.id,s.name,s.slug,s.status,s.plan_name,s.template_key,s.updated_at,c.business_name,c.id AS client_id FROM sites s JOIN clients c ON c.id=s.client_id ORDER BY s.created_at DESC LIMIT 100").all();

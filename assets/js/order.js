@@ -1,6 +1,6 @@
 (() => {
   const config = window.SITE_CONFIG || {};
-  const cleanNumber = String(config.whatsappNumber || "").replace(/\\D/g, "");
+  const cleanNumber = String(config.whatsappNumber || "").replace(/\D/g, "");
   const status = document.querySelector("[data-contact-status]");
   const filters = document.querySelectorAll("[data-filter]");
   const cards = document.querySelectorAll(".catalog-card");
@@ -32,7 +32,7 @@
         "Kustomisasi yang diinginkan: ",
         "",
         "Mohon informasi biaya akhir dan waktu pengerjaan. Terima kasih."
-      ].join("\\n");
+      ].join("\n");
 
       if (cleanNumber.length >= 10) {
         window.location.href = "https://wa.me/" + cleanNumber + "?text=" + encodeURIComponent(message);
